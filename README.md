@@ -136,9 +136,104 @@ the network, which would be slower.
         - Have a backup load balancer
 
 # Consistent hashing
+    - Hashing can be used for load balancing
+    - A hash of IP address is modded (Modulo operator %) with the number of servers we have. The value we get will then be used to forward request to the server with that value.
+    - Hashed load balancing allows the load balancer to send the request from the same user to the same server since the IP address will be the same.
+    - Hashed balancing is beneficial if servers are performing some type of caching. So a server caching data for user 1 will perform better.
+    - It is used when we want users to be consistently mapped to specific servers.
+    - The problem with this is that if the number of servers change the hashing result will change and the user to server mapping will also change, negating the benefits of caching at the server level.
 
- 
+# Storage
+- RDMS / SQL:
+    - Data is persistent
+    - Stored on disk
+    - Uses B+ Tree. B+ tree is like a binary tree but instead of being binary (a node having 2 children) it has n children.
+    - Data is kept in tables which satisfy's a schema
+    - Schema design is important
+    - Each table can have a relationship with another table using foriegn key constraints
+    - Allows data and referential integrity
+    - You can scale RDMS vertically.
+    - Mysql and Postgres do not have native sharding support
+    - ACID:
+        - Atomicity: 
+            - Every transaction is all or nothing.
+        - Consistency:
+            - Data consistency.
+            - Data will adhere to the defined contraints
+        - Isolation:
+            - Concurrent transactions are isolated. 
+            - Transactions will be serilialized, meaning theyy will be commited in a specific order to avid dirty reads.
+            - Isolation 
+        - Durability: 
+            - Database is persitent since it is stored on disk. MYSQL is ACID compliant but REDis is not since it6 is not saved on disk.
+            - Transactions: Every transaction commited is durable. it should be persisted.
+- NoSQL / Non relational DB:
+    - Hase BASE properties:
+        - Eventual consistency: Multiple NoSQL db's of the same schema will follow a leader and follower configuration where the follower db has a copy of the data in teh leader db.
+        Writes will take place on the leader db, and the leader db will eventually at some time later will write that to the follower db's. 
+        - Stale data is still possible, but eventually the replica will have the updated value.
+        - This allows higher read count.
+        - You can break up the DB using sharding
+    - Type:
+        - Key value stores like redis and memcached
+        - Document stores / dbs. The Document database would be a collection of JSON objects. Has flexible schema. MongoDB.
+        - Wide Column DBs: Ideal for write heavy workloads. Cassandra
+        - Graph DB: Relational NoSQL databases. Ideal to represent and store graph based relations like social media sites.
+    - Why NoSQL:
+        - Allows eventual consistency
+        - More scalable than RDMS. RDBMS's ACID properties limit its scalability. You can vertical scale a RDMS db but cannot do it horizontally.
+        - You can split the data in multiple DB's since there is no referential issues in NoSQL Databases.
+    - Has native support for sharding
 
+# Replication and Sharding
+- Replication:
+    - Replication is the practice of maintaining more than one copy of the database.
+    - Replication is beneficial for instances where a single database is unable to handle the read / write load.
+    - Replication allows us to have high availbility. Since a leader db can go down, the follower can become the leader since it has the same data. eventual or immidiately consistent.
+    - Types: 
+        - Leader / Follower configuration: The leader db is the primary db. It is replicated and copied to create another follower db. The leader db gets the writes and then replicates that data to the followers. The follower is read only. Replication is a way to scale up the read.
+        - Leader / Leader replication: Both db nodes are leaders and can get writes and reads. Each leader will replicate the data written to itself to the other leader. This strategy is ideal for if leaders have to serve separate parts of the world.
+    - Replication strategies:
+        - Async: The leader asynchronously (Eventually7 at some point) writes data to follower nodes. Reads before the eventual consistency might be stale / inconsistent.
+        - Sync: The leader immidiately replicates data to the follower nodes. This introduces latency.
+- Sharding:
+    - Sharding involves breaking up / splitting the db into different dbs. Meaning some rows from a table are present in shard1 and other rows in shard2.
+    - Sharded dbs are put on different machines.
+    - Sharding allows better throughput and query performance.
+    - The data is split up using the shard key. Shard key can be different based on the sharding strategy.
+    - Mysql and PostgreSQL do not have native sharding support.
+    - Sharding method:
+        - Range based sharding: The shard key is a range of values. Say primary key 1 - 100 would go in shard 1 and primary key 101 - 200 will go0 in shard 2.
+        - Hash based sharding: consistent sharding
+    Problems:
+        - Sharding get really complicated when you have to do joins.
+
+# CAP Theorem
+- The CAP theorem applies to distributed databases which have replicas.
+- The theorem dictates that a database can satisfy any of the 2 out of the 3. A database can satisfy consistency and availbility or, can have partition tolerance and availbility but not all 3.
+- Consistency: Data consistency between the leader and replicas. Every single read will get the latest write.
+- Availability: If the distriubuted system gets disconnected, meaning leader is no longer able to replicate to the follower, user reads are routed to the leader. This is consistency being gained by sacrifcing availbility. Availbility is being sacrificed because we are disallowing the users to go to the partitiobned (disconnected) follower.
+- Partition (Network partition) Tolerance: The ability of the system to keep functioning even if the distributed replicas / leaders stop talking to each other.
+- PACELC:
+    - When there is a partition, choose A or C.
+    - If there isnt a partition, Favour latency or consistency.
+
+# Object Storage:
+- Object storage is flat storage structure unlike the File system which is hierarchical.
+- AWS S3 is a block storage.
+- Ideal for storing large files for long term.
+- Metadata for these block storage files are kept in a db.
+
+# Message Queue's:
+- Message queue's are for async message processing
+- FIFO
+- Push and Pull strategies
+- Server sends back an Ack when the message is processed
+- If the queue does not receive an Ack from the service, it will not drop the message 
+- Allows for service decoupling
+- Pub / Sub: Publishers publish messages to subscriber services. This is a many (publishers) to many (subscribers) model. Topics are the message receivers for publichsed messages to queues and the topics will then feed multiple subscribers (services). each of the subsribers could be doing something different with teh message. This is also called a Fan out strategy.
+- RabbitMQ
+- Kafka
 
 
 
