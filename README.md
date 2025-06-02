@@ -235,5 +235,30 @@ the network, which would be slower.
 - RabbitMQ
 - Kafka
 
+# Approach:
+What approach should be followed to address these questions:
+1. Ask questions to scope out the problem
+2. Gather functional requirements
+    - These are the main features of the application. Things that a user should be able to do with an application. What happens when the feature is used. 
+3. Gather non functional requirements
+    - How many DAU's ?
+    - What throughput ?
+    - Storage capacity ?
+    - Latency ?
+    - Topics being touched on:
+        - Latency / performance
+        - Availability: non error response / total requests
+        - Scalability
+        - Reliability
+        - Fault tolerance
+4. Perform some basic calculations (Back of the envelop calculations)
+    - How many DAU's
+    - How many reads and writes per day, per hour, per second
+    - Throughput
+    - 1 second, 1 millisecond, 1 micro second, 1 nano second
+    - 1 byte, 1 kilobyte, 1 megabyte, 1 gigabyte, 1 tersbyte, 1 petabyte
+
+
+
 
 
