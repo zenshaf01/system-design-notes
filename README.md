@@ -279,6 +279,99 @@ Database indexes are used to speed up database reads.
 can calculate its own checksum and compare it with the stored value of the checksum to determine if the data got corrupted or tampered with during transit. If it happens the client can decide to
 fetch data from another replica.
 
+# Strong consistency vs Eventual consistency
+Strong:
+- Ensures strong consistency throughout the replicas
+- Achieves it through sync replication
+- transaction is only successful when it goes through all replicas
+- Trade off is that it provides consistency at the expense of increased latency and decreased availability.
+- Use cases: Use this when correctness is critical at any given moment
+    - financial transactions
+    - banking systems
+    - booking systems
+    - patient information systems
+
+Eventual:
+- ensures that all replicas will eventually get teh latest write after some time.
+- achieves it through async replication
+- stale data will be read until the replica's are updated.
+- Performance is better
+- Trade off is that it provides better performance and decreased latency and increased availability at the expense of inconsistent data across replica's.
+- Use cases: Use this when slight delays in synchronization is tolerable and you need super low latency
+    - social media feeds or likes
+    - messaging apps
+    - cdn's
+
+# Latency and Throughput
+Latency:
+- Measures delay
+- The amount of time it takes for a task to go from start to finish.
+- measured in milliseconds or seconds.
+- lower value is better
+- is a crucial factor where real time or near-real time interaction is needed like gaming, video conferencing
+- Improve it by:
+    - Use CDN's where applicable
+    - improve hardware
+    - cache frequently used content
+    - use faster protocols like http2
+    - db optimization
+    - load balancing
+
+Throughput:
+- the capacity of a system to do X work in Y time.
+- the amount of data transferred over a network or processed by the system in a given amount of time.
+- measures work done over time.
+- measured in data per time (megabits per second)
+- higher value is better
+- is a crucial factor needing high throughput. bulk datya processing, video streaming
+- improve it by:
+    - increase network bandwidth
+    - scale horizontally
+    - cache
+    - batch processing
+
+Some times optimizing for one of the above might negatively impact the other.
+
+# ACID vs BASE
+- Both are consistency and reliability models which give different benefits
+- ACID: 
+    - provides strong consistency
+    - provides immidiate consistency
+    - transactions are all or nothing
+    - vertical scalling allowed
+    - hard to scale horizontally
+    - Use cases:
+        - use where strong consistency is needed
+        - health care
+        - banking
+        - inventoy management
+    - Examples:
+        - MySQL
+        - PostgreSQL
+        - Oracle
+- BASE 
+    - provides high availability
+    - provides eventual consistent
+    - allows partial updates
+    - allows horizontal scalling
+    - Use cases:
+        - Ideal for distributed systems
+        - social media feeds
+        - gaming
+    - Example:
+        - Cassandra
+        - MongoDB,
+        - DynamoDB
+
+# API Gateway:
+- Used for API management
+- Sits between the client and a collection of backend services.
+- Acts as a reverse proxy
+- Routes requests, transforms request, performs auth and permissions, rate limiting
+- Provides a uniqfied and centralized access for microservices
+
+
+
 # Approach:
 What approach should be followed to address these questions:
 1. Ask questions to scope out the problem
@@ -351,6 +444,7 @@ Detailed Design:
 At every step, clarify and justify why you have chosen one approach over the other.
 1. Clarify functional requirements. (Spend 5 minutes at max)
 2. Clarify non functional requirements (Spend 5 minutes at max)
+    - What’s the impact if a user sees stale data for a moment? Will it harm the experience or business?
 3. Propose High level design and confirm if thats what they want.
 4. Update high level design after feedback for 3.
 5. Dig into Detailed design.
