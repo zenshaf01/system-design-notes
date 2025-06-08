@@ -374,7 +374,7 @@ Some times optimizing for one of the above might negatively impact the other.
 
 # Approach:
 What approach should be followed to address these questions:
-1. Ask questions to scope out the problem
+1. Ask questions to scope out the problem. YOu need to determine what parts of the system are we designing ?
 2. Gather functional requirements
     - These are the main features of the application. Things that a user should be able to do with an application. What happens when the feature is used. 
 3. Gather non functional requirements
@@ -441,7 +441,7 @@ Detailed Design:
 3. Caching can be used to improve rules read and write performance. Caching can be done by a separate worker service.
 
 # Steps
-At every step, clarify and justify why you have chosen one approach over the other.
+At every step, clarify and justify why you have chosen one approach over the other. ALso perform calculations
 1. Clarify functional requirements. (Spend 5 minutes at max)
 2. Clarify non functional requirements (Spend 5 minutes at max)
     - What’s the impact if a user sees stale data for a moment? Will it harm the experience or business?
@@ -453,6 +453,21 @@ At every step, clarify and justify why you have chosen one approach over the oth
     - Data Schemas for persistent and in memory store, write out the schema
 6. Discuss any bottlenecks.
 
+# Design Guru steps:
+1. Requirements clarification
+2. Calculations
+3. System interface definition (API endpoint handlers)
+4. Data Model
+5. High Level design
+6. Detailed design
+7. Identify and resolve bottlenecks
+
+Successful candidate:
+1. Figures out 3 crucial functional requirement and 3 most crucial non functional requirements and Design the system according to these requirements. (Knowledge depth)
+2. Communication with interviewer is key. (knowledge breadth)
+    - See the interviewer as your future collegue
+    - Must articulate your thoughts
+    - Must communicate trade offs
 
 
 
