@@ -1,5 +1,8 @@
 # Technologies to try out
 
+# Languages
+- Golang
+
 # DBs
 - Cassandra
 - PostgreSQL
